@@ -31,3 +31,39 @@ public class QuestionDataLoader {
         questionRepository.save(new Question(null, "Which is the correct syntax to display output in Python?", "print()", "echo", "System.out.println", "console.log", "Easy", "python", "print()"));
     }
 }
+
+
+// --- Fallback Methods ---
+
+    // default ResponseEntity<List<Integer>> getQuestionFallback(String category, Integer numQ, Throwable t) {
+    //     System.out.println("Fallback: Question Service is down. Returning empty list. Reason: "+ t.getMessage());
+    //     return ResponseEntity.status(503).body(List.of());
+    // }
+
+    // default ResponseEntity<List<QuestionWrapper>> getQuestionsFallback(List<Integer> ids, Throwable t) {
+    //     System.out.println("Fallback: getQuestions. Reason: "+ t.getMessage());
+    //     return ResponseEntity.status(503).body(new ArrayList<>());
+    // }
+
+    // default ResponseEntity<Integer> getScoreFallback(List<Response> responses, Throwable t) {
+    //     System.out.println("Fallback: getScore. Reason: "+ t.getMessage());
+    //     return ResponseEntity.status(503).body(0);
+    // }
+
+
+// # Retry config
+// resilience4j.retry.instances.quizServiceRetry.max-attempts=3
+// resilience4j.retry.instances.quizServiceRetry.wait-duration=500ms
+
+// # Enable jitter/random delay between retries
+// resilience4j.retry.instances.quizServiceRetry.enable-randomized-wait=true
+// resilience4j.retry.instances.quizServiceRetry.randomized-wait-factor=0.5
+
+//# circuit breaker config
+// resilience4j.circuitbreaker.instances.questionServiceCB.sliding-window-type=count_based
+// resilience4j.circuitbreaker.instances.questionServiceCB.sliding-window-size=10
+// resilience4j.circuitbreaker.instances.questionServiceCB.failure-rate-threshold=50
+// resilience4j.circuitbreaker.instances.questionServiceCB.wait-duration-in-open-state=10s
+// resilience4j.circuitbreaker.instances.questionServiceCB.permitted-number-of-calls-in-half-open-state=3
+
+
