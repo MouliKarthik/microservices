@@ -102,4 +102,8 @@ public class RetryLogger {
     }
 }
 
+# Retry config for Feign calls to Question Service
+resilience4j.retry.instances.quizServiceRetry.max-attempts=3
+resilience4j.retry.instances.quizServiceRetry.wait-duration=1s
+resilience4j.retry.instances.quizServiceRetry.retry-exceptions=feign.RetryableException,java.net.ConnectException,java.net.SocketTimeoutException
 
