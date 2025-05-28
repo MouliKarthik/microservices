@@ -67,3 +67,39 @@ public class QuestionDataLoader {
 // resilience4j.circuitbreaker.instances.questionServiceCB.permitted-number-of-calls-in-half-open-state=3
 
 
+package com.mouli.QuizService;
+
+
+import io.github.resilience4j.retry.RetryRegistry;
+import io.github.resilience4j.retry.event.RetryOnRetryEvent;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@Slf4j
+public class RetryLogger {
+
+    private final RetryRegistry retryRegistry;
+
+    public RetryLogger(RetryRegistry retryRegistry) {
+        this.retryRegistry = retryRegistry;
+    }
+
+    @PostConstruct
+    public void registerRetryEventLogger() {
+        retryRegistry.retry("quizServiceRetry")
+                .getEventPublisher()
+                .onRetry(event -> logRetryEvent(event));
+    }
+
+    private void logRetryEvent(RetryOnRetryEvent event) {
+        log.warn("RETRY attempt #{} for [{}], wait before next attempt: {} ms, reason: {}",
+                event.getNumberOfRetryAttempts(),
+                event.getName(),
+                event.getWaitInterval().toMillis(),
+                event.getLastThrowable() != null ? event.getLastThrowable().toString() : "unknown");
+    }
+}
+
+
